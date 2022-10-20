@@ -1,5 +1,5 @@
 class Gameboard:
-    def __init__(self, num_of_matches=3):
+    def __init__(self, num_of_matches=1):
 
         self.name = "Gameboard"
         self.board_rows = {
@@ -37,6 +37,7 @@ class Player:
         self.player_name = player_name
         self.player_score = 0
         self.player_icon = player_icon
+        self.player_moves = []
         # self.column_choice = 0
         # self.row_choice = 0
 
@@ -99,6 +100,69 @@ class Player:
             new_board.board_rows[self.data_input_row_choice][
                 self.data_input_column_choice
             ] = self.player_icon
+            player_moves.append([self.data_input_row_choice -1, self.data_input_column_choice])
+
+    def determine_winning(self):
+    
+        # credit for logic https://jayeshkawli.ghost.io/tic-tac-toe/
+        player_moves_list = self.player_moves
+        player_won = False
+
+        def check_win_rows(self):
+        
+            for row_num in range(0,3): #row = 0, row = 1, row = 2
+                 # Adding all player moves with 0 index = row to a list
+                row_container = [1 for player_move in player_moves_list if player_move[0] == row_num]
+                # Checking if player has made 3 moves in one row and returning True if so - player won
+                if sum(row_container) == 3:
+                    print(f'{self.player_name} won by row!')
+                    return player_won = True   
+                else:
+                    continue
+    
+        def check_win_columns(self):
+
+            for column_num in range(0,3): #column = 0, column = 1, column = 2
+                # Adding all player moves with 1 index = column to a list
+                column_container = [1 for player_move in player_moves_list if player_move[1] == column_num]
+                # Checking if player has made 3 moves in one column and returning True if so - player won
+                if sum(column_container) == 3:
+                    print(f'{self.player_name} won by column!')
+                    return player_won = True    
+                else:
+                    continue
+    
+        def check_digonal(self):
+
+            # Adding a "1" to a list if a player move had equal x and y "coordinates" - moves 1:1, 2:2, 3:3
+            diagonal_container = [1 for player_move in player_moves_list if player_move[0] == player_move[1]]
+
+            if sum(diagonal_container) == 3:
+                return player_won = True  
+                print(f'{self.player_name} won by diagonal!')
+            else:
+                continue
+    
+        def check_opposite_diagonal(self):
+            #if moves are 0:2, 1,1 and 2,0 - opposite diagonal, then x + y + 1 = 3 so filtering these moves matching this condition out to a container 
+            opposite_diagonal_container = [1 for player_move in player_move_list if player_move[0] + player_move[1] + 1 == 3]
+
+            if sum(opposite_diagonal_container) == 3:
+                print(f'{self.player_name} won by opposite diagonal!')
+                return player_won = True 
+            else:
+                continue
+        
+        check_win_rows(self.player_moves_list)
+        check_win_columns(self.player_moves_list)
+        check_digonal(self.player_moves_list):
+        check_opposite_diagonal(self.player_moves_list)
+
+        return player_won
+
+
+
+
 
 
 # Entering a number of matches the players want to play and checking if the match count is a valid number
