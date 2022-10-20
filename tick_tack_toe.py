@@ -138,8 +138,8 @@ class Player:
             diagonal_container = [1 for player_move in player_moves_list if player_move[0] == player_move[1]]
 
             if sum(diagonal_container) == 3:
-                return player_won = True  
                 print(f'{self.player_name} won by diagonal!')
+                return player_won = True  
             else:
                 continue
     
