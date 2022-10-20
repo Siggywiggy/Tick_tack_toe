@@ -90,6 +90,7 @@ class Player:
     # Needs more work on if the player enters nothing
 
     def input_move_on_board(self):
+        # https://stackoverflow.com/questions/5557937/how-do-i-use-try-except-or-if-else-to-validate-user-input
         self.data_input_column_choice = self.column_choice - 1
         self.data_input_row_choice = self.row_choice
         print("dict key ", self.data_input_row_choice)
