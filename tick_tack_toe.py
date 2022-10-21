@@ -1,3 +1,6 @@
+from ipaddress import collapse_addresses
+
+
 class Gameboard:
     def __init__(self):
 
@@ -31,19 +34,6 @@ class Gameboard:
         print(bottom_bar)
         return
 
-    def match_ended(self):
-        if player1.determine_winning() is True or player2.determine_winning() is True:
-            return True
-        else:
-            return False
-
-    def board_full(self):
-        if "_" not in self.board_rows.values():
-            print("No winner this round!")
-            return True
-        else:
-            return False
-
 
 class Player:
     def __init__(self, player_name, player_icon="x"):
@@ -56,66 +46,58 @@ class Player:
         return f"Player {self.player_name}"
 
     def prompt_move(self):
+        
+        while True:
 
-        self.row_choice = input(
-            "{name}, choose the row of your move 1-2-3: ".format(name=self.player_name)
-        )
-        self.column_choice = input(
+            row_choice = input(
+            "{name}, choose the row of your move 1-2-3: ".format(name=self.player_name))
+            try:
+                row_choice = int(row_choice) - 1
+            except ValueError:
+                print("Row choice not a number! Try again")
+                continue
+
+            if 0 <= row_choice < 3:
+                break 
+            else:
+                print('Row choice is out of range 1-2-3')
+        
+        while True:
+
+            column_choice = input(
             "{name}, choose the column of your move 1-2-3: ".format(
-                name=self.player_name
-            )
-        )
+                name=self.player_name))
 
-        self.check_move()
-        self.column_choice = int(self.column_choice)
-        self.row_choice = int(self.row_choice)
-        print("You chose row ", self.row_choice)
-        print("You chose column ", self.column_choice)
-        self.input_move_on_board()
+            try:
+                column_choice = int(column_choice) - 1
+            except ValueError:
+                print("Column choice not a number! Try again")
+                continue
 
-    def check_move(self):
+            if 0 <= column_choice < 3:
+                break 
+            else:
+                print('Column choice is out of range 1-2-3')
 
-        try:
-            int(self.column_choice)
-        except ValueError:
-            print("Column choice not a number!")
-            self.prompt_move()
 
-        try:
-            int(self.row_choice)
-        except ValueError:
-            print("Row choice not a number!")
-            self.prompt_move()
-
-    # Needs more work on if the player enters nothing
-
-    def input_move_on_board(self):
-        # https://stackoverflow.com/questions/5557937/how-do-i-use-try-except-or-if-else-to-validate-user-input
-        self.data_input_column_choice = self.column_choice - 1
-        self.data_input_row_choice = self.row_choice
-        print("dict key ", self.data_input_row_choice)
-        print("list index", self.data_input_column_choice)
-        if self.data_input_column_choice not in range(0, 3):
-            print("Your column choice is out of 1-2-3 range! Choose your move again!")
-            self.prompt_move()
-
-        elif self.data_input_row_choice not in game.board_rows.keys():
-            print("Your row choice is out of 1-2-3 range! Choose your move again!")
-            self.prompt_move()
-
-        elif (
-            game.board_rows[self.data_input_row_choice][self.data_input_column_choice]
-            != "_"
-        ):
-            print("There is already a mark there!")
-            self.prompt_move()
+        if ([row_choice, column_choice] not in self.player_moves) or ([row_choice, column_choice] not in player2.player_moves):
+            return self.player_moves.append([row_choice, column_choice])
+            #self.input_move_on_board(row_choice, column_choice)     
         else:
-            game.board_rows[self.data_input_row_choice][
-                self.data_input_column_choice
-            ] = self.player_icon
-            self.player_moves.append(
-                [self.data_input_row_choice - 1, self.data_input_column_choice]
-            )
+            print('There is already a mark there, try again!')
+            
+            
+                
+        
+
+
+    def input_move_on_board(self, row_choice, column_choice):
+        
+        self.row_choice = row_choice + 1
+        self.column_choice = column_choice
+
+
+
 
     def determine_winning(self):
 
@@ -166,18 +148,25 @@ class Player:
         self.player_score += 1
 
 
-# Entering a number of matches the players want to play and checking if the match count is a valid number
+# Entering a number of matches the players want to play and checking if the match count is a valid integrer
 def get_num_matches():
-    num_of_matches = input(
-        "Welcome to a game of Tick-Tack-Toe, choose how many rounds you want to play: "
-    )
+ 
+    while True:
+        num_of_matches = input(
+        "Welcome to a game of Tick-Tack-Toe, choose how many rounds you want to play: ")
 
-    try:
-        num_of_matches = int(num_of_matches)
-    except ValueError:
-        print("Not a number! Quitting game")
-        quit()
+        try:
+            num_of_matches = int(num_of_matches)
+        except ValueError:
+            print("Not a number! Enter a number!")
+            continue
 
+        if num_of_matches > 0:
+            break
+        else: 
+            print('Choose a number larger then 0')
+
+    print(num_of_matches)
     return num_of_matches
 
 
@@ -192,7 +181,7 @@ def get_player_names():
 
 
 # Getting players input for number of matches
-num_of_matches = get_num_matches()
+#num_of_matches = get_num_matches()
 # Getting players input for player names
 player_names = get_player_names()
 
@@ -200,24 +189,28 @@ player_names = get_player_names()
 player1 = Player(player_names[0], "x")
 player2 = Player(player_names[1], "o")
 
+player1.prompt_move()
+print(player1.player_moves)
+player1.prompt_move()
+print(player1.player_moves)
 
-game = Gameboard()
+#game = Gameboard()
 
-print(game)
+#print(game)
 
-for number in range(0, 9):
-    game.draw_board()
-    player1.prompt_move()
-    game.draw_board()
-    player2.prompt_move()
+#for number in range(0, 9):
+#    game.draw_board()
+#    player1.prompt_move()
+#    game.draw_board()
+#    player2.prompt_move()
 
-    if player1.determine_winning() is True:
-        player1.add_score()
-        break
-    elif player2.determine_winning() is True:
-        player2.add_score()
-        break
+#    if player1.determine_winning() is True:
+#        player1.add_score()
+#        break
+#    elif player2.determine_winning() is True:
+#        player2.add_score()
+#       break
 
 
-print(player1.player_score)
-print(player2.player_score)
+#print(player1.player_score)
+#print(player2.player_score)
