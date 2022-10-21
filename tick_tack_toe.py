@@ -1,5 +1,4 @@
-from ipaddress import collapse_addresses
-
+#Tick-tack-toe game 
 
 class Gameboard:
     def __init__(self):
@@ -34,6 +33,16 @@ class Gameboard:
         print(bottom_bar)
         return
 
+    def redraw_board(self):
+        for move in player1.player_moves:
+            x_coord = move[0] + 1
+            y_coord = move[1] 
+            self.board_rows[x_coord][y_coord] = player1.player_icon
+        for move_2 in player2.player_moves:
+            x_coord = move_2[0] + 1
+            y_coord = move_2[1] 
+            self.board_rows[x_coord][y_coord] = player2.player_icon            
+
 
 class Player:
     def __init__(self, player_name, player_icon="x"):
@@ -46,59 +55,52 @@ class Player:
         return f"Player {self.player_name}"
 
     def prompt_move(self):
-        
+        # Outer while loop to check if the player move isnt already done by player1 or player2. If move has already been done returning back to the top of loop to enter a new move 
         while True:
+            # Inner while loop to check if player input is valid 
+            while True:
+                #Checking if row input is a number and checking if its within rows
+                row_choice = input("{name}, choose the row of your move 1-2-3: ".format(name=self.player_name))
 
-            row_choice = input(
-            "{name}, choose the row of your move 1-2-3: ".format(name=self.player_name))
-            try:
-                row_choice = int(row_choice) - 1
-            except ValueError:
-                print("Row choice not a number! Try again")
-                continue
+                try:
+                    row_choice = int(row_choice) - 1
+                except ValueError:
+                    print("Row choice not a number! Try again")
+                    continue
 
-            if 0 <= row_choice < 3:
-                break 
+                if 0 <= row_choice < 3:
+                    break 
+                else:
+                    print('Row choice is out of range 1-2-3')
+        
+            while True:
+                #Checking if column input is a number and checking if its within rows
+                column_choice = input("{name}, choose the column of your move 1-2-3: ".format(
+                    name=self.player_name))
+
+                try:
+                    column_choice = int(column_choice) - 1
+                except ValueError:
+                    print("Column choice not a number! Try again")
+                    continue
+
+                if 0 <= column_choice < 3:
+                    break 
+                else:
+                    print('Column choice is out of range 1-2-3')
+
+            # Adding verified row and column inputs to a list
+            player_move = [row_choice, column_choice]
+
+            # Checking if player move is not within already performed moves
+            if player_move not in player1.player_moves and player_move not in player2.player_moves:
+                self.player_moves.append(player_move)
+                break
+    
             else:
-                print('Row choice is out of range 1-2-3')
-        
-        while True:
-
-            column_choice = input(
-            "{name}, choose the column of your move 1-2-3: ".format(
-                name=self.player_name))
-
-            try:
-                column_choice = int(column_choice) - 1
-            except ValueError:
-                print("Column choice not a number! Try again")
+                print('There is already a mark there, try again!')
                 continue
-
-            if 0 <= column_choice < 3:
-                break 
-            else:
-                print('Column choice is out of range 1-2-3')
-
-
-        if ([row_choice, column_choice] not in self.player_moves) or ([row_choice, column_choice] not in player2.player_moves):
-            return self.player_moves.append([row_choice, column_choice])
-            #self.input_move_on_board(row_choice, column_choice)     
-        else:
-            print('There is already a mark there, try again!')
             
-            
-                
-        
-
-
-    def input_move_on_board(self, row_choice, column_choice):
-        
-        self.row_choice = row_choice + 1
-        self.column_choice = column_choice
-
-
-
-
     def determine_winning(self):
 
         # credit for logic https://jayeshkawli.ghost.io/tic-tac-toe/
@@ -110,6 +112,7 @@ class Player:
             row_container = [1 for move in self.player_moves if move[0] == row_num]
             # Checking if player has made 3 moves in one row and returning True if so - player won
             if sum(row_container) == 3:
+                self.add_score()
                 print(f"{self.player_name} won by row!")
                 player_won = True
 
@@ -121,6 +124,7 @@ class Player:
             ]
 
             if sum(column_container) == 3:
+                self.add_score()
                 print(f"{self.player_name} won by column!")
                 player_won = True
 
@@ -129,6 +133,7 @@ class Player:
         diagonal_container = [1 for move in self.player_moves if move[0] == move[1]]
 
         if sum(diagonal_container) == 3:
+            self.add_score()
             print(f"{self.player_name} won by diagonal!")
             player_won = True
 
@@ -138,6 +143,7 @@ class Player:
         ]
 
         if sum(opposite_diagonal_container) == 3:
+            self.add_score()
             print(f"{self.player_name} won by opposite diagonal!")
             player_won = True
 
@@ -166,11 +172,9 @@ def get_num_matches():
         else: 
             print('Choose a number larger then 0')
 
-    print(num_of_matches)
     return num_of_matches
 
-
-# Function returning a list of player names
+    # Function returning a list of player names
 def get_player_names():
     player_names_list = []
     input_name_1 = input("First player, enter your name: ")
@@ -178,39 +182,37 @@ def get_player_names():
     input_name_2 = input("Second player, enter your name: ")
     player_names_list.append(input_name_2)
     return player_names_list
+    
+def play_round():
+    for number in range(0, 9):
+        game.draw_board()
+
+        player1.prompt_move()
+        game.redraw_board()
+        if player1.determine_winning() is True:
+            player1.add_score()
+            break
+
+        game.draw_board()
+
+        player2.prompt_move()
+        game.redraw_board()
+        if player2.determine_winning() is True:
+            player1.add_score()
+            break
+    
+        if number == 9 and (player1.determine_winning() is not True) and (player2.determine_winning() is not True):
+            print('Its a draw!')
 
 
-# Getting players input for number of matches
-#num_of_matches = get_num_matches()
-# Getting players input for player names
+    # Getting players input for player names
 player_names = get_player_names()
 
 # Instantiating player classes
 player1 = Player(player_names[0], "x")
 player2 = Player(player_names[1], "o")
-
-player1.prompt_move()
-print(player1.player_moves)
-player1.prompt_move()
-print(player1.player_moves)
-
-#game = Gameboard()
-
-#print(game)
-
-#for number in range(0, 9):
-#    game.draw_board()
-#    player1.prompt_move()
-#    game.draw_board()
-#    player2.prompt_move()
-
-#    if player1.determine_winning() is True:
-#        player1.add_score()
-#        break
-#    elif player2.determine_winning() is True:
-#        player2.add_score()
-#       break
-
-
-#print(player1.player_score)
-#print(player2.player_score)
+game = Gameboard()
+    
+get_num_matches()
+print(game)
+play_round()
