@@ -5,6 +5,7 @@ class Gameboard:
     def __init__(self, rounds):
 
         self.name = "Gameboard"
+        # Graphical "engine" displaying the state of board
         self.board_rows = {
             1: ["_", "_", "_"],
             2: ["_", "_", "_"],
@@ -14,7 +15,7 @@ class Gameboard:
 
     def __repr__(self):
 
-        return "{p1_name} and {p2_name}, lets play a game of Tick-tack-toe for {rounds} more rounds! \n{p1_name}, your mark will be [{p1_icon}] and {p2_name}, yours will be [{p2_icon}]".format(
+        return "{p1_name} ja {p2_name}, mängime trips-traps-trulli {rounds} raundi! \n{p1_name}, sinu märk on [{p1_icon}] ja {p2_name}, sinu märk on [{p2_icon}]".format(
             p1_name=player1.player_name,
             p2_name=player2.player_name,
             rounds=self.rounds,
@@ -69,7 +70,7 @@ class Player:
             while True:
                 # Checking if row input is a number and checking if its within rows
                 row_choice = input(
-                    "{name}, choose the row of your move 1-2-3: ".format(
+                    "{name}, vali oma käigu rea number: 1-2-3: ".format(
                         name=self.player_name
                     )
                 )
@@ -77,18 +78,18 @@ class Player:
                 try:
                     row_choice = int(row_choice) - 1
                 except ValueError:
-                    print("Row choice not a number! Try again")
+                    print("Rea number ei ole number! Proovi uuesti!")
                     continue
 
                 if 0 <= row_choice < 3:
                     break
                 else:
-                    print("Row choice is out of range 1-2-3")
+                    print("Rea number ei olnud 1-2-3!")
 
             while True:
                 # Checking if column input is a number and checking if its within rows
                 column_choice = input(
-                    "{name}, choose the column of your move 1-2-3: ".format(
+                    "{name}, vali oma käigu tulba number: 1-2-3: ".format(
                         name=self.player_name
                     )
                 )
@@ -96,13 +97,13 @@ class Player:
                 try:
                     column_choice = int(column_choice) - 1
                 except ValueError:
-                    print("Column choice not a number! Try again")
+                    print("Tulba number ei ole number! Proovi uuesti!")
                     continue
 
                 if 0 <= column_choice < 3:
                     break
                 else:
-                    print("Column choice is out of range 1-2-3")
+                    print("Tulba number ei olnud 1-2-3!")
 
             # Adding verified row and column inputs to a list
             player_move = [row_choice, column_choice]
@@ -116,7 +117,7 @@ class Player:
                 break
 
             else:
-                print("There is already a mark there, try again!")
+                print("See ruut on juba märgitud, proovi uuesti!")
                 continue
 
     def determine_winning(self):
@@ -131,7 +132,7 @@ class Player:
             # Checking if player has made 3 moves in one row and returning True if so - player won
             if sum(row_container) == 3:
                 self.add_score()
-                print(f"{self.player_name} won by row!")
+                print(f"{self.player_name} võitis reaga!")
                 player_won = True
 
         # Checking if player has made 3 moves in one column and returning True if so - player won
@@ -143,7 +144,7 @@ class Player:
 
             if sum(column_container) == 3:
                 self.add_score()
-                print(f"{self.player_name} won by column!")
+                print(f"{self.player_name} võitis tulbaga!")
                 player_won = True
 
         # Container for moves that are 1,1, 2,2, 3,3
@@ -152,7 +153,7 @@ class Player:
 
         if sum(diagonal_container) == 3:
             self.add_score()
-            print(f"{self.player_name} won by diagonal!")
+            print(f"{self.player_name} võitis diagonaaliga!")
             player_won = True
 
         # if moves are 0:2, 1,1 and 2,0 - opposite diagonal, then x + y + 1 = 3 so filtering these moves matching this condition out to a container
@@ -162,7 +163,7 @@ class Player:
 
         if sum(opposite_diagonal_container) == 3:
             self.add_score()
-            print(f"{self.player_name} won by opposite diagonal!")
+            print(f"{self.player_name} võitis diagonaaliga!")
             player_won = True
 
         # Returning if the player instance has met winning condition
@@ -180,19 +181,19 @@ def get_num_matches():
 
     while True:
         num_of_matches = input(
-            "Welcome to a game of Tick-Tack-Toe, choose how many rounds you want to play: "
+            "Tere tulemast mängima trips-traps-trulli, valige mitu raundi soovite mängida: "
         )
 
         try:
             num_of_matches = int(num_of_matches)
         except ValueError:
-            print("Not a number! Enter a number!")
+            print("Ei ole number! Sisestage number!")
             continue
 
         if num_of_matches > 0:
             break
         else:
-            print("Choose a number larger then 0")
+            print("Valige nullist suurem number!")
 
     return num_of_matches
 
@@ -201,9 +202,9 @@ def get_num_matches():
 
 def get_player_names():
     player_names_list = []
-    input_name_1 = input("First player, enter your name: ")
+    input_name_1 = input("Esimene mängija, sisesta oma nimi: ")
     player_names_list.append(input_name_1)
-    input_name_2 = input("Second player, enter your name: ")
+    input_name_2 = input("Teine mängija, sisesta oma nimi: ")
     player_names_list.append(input_name_2)
     return player_names_list
 
@@ -235,7 +236,7 @@ def play_round():
             break
 
         if move_counter == 9:
-            print("Its a tie!")
+            print("Viik!")
 
 
 # Getting players input for player names
@@ -258,5 +259,5 @@ for num in range(0, game.rounds):
     player2.reset_moves()
 
 print(
-    f"Final tally: {player1.player_name} won {player1.player_score} times and {player2.player_name} won {player2.player_score} times. \nThanks for playing!"
+    f"Lõppskoor: {player1.player_name} võitis {player1.player_score} korda ja {player2.player_name} võitis {player2.player_score} korda. \nÄitäh mängimast!"
 )
