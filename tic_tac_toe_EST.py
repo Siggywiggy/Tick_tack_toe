@@ -24,8 +24,8 @@ class Gameboard:
         )
 
     def draw_board(self):
-        header_bar = " {=====}\n [1_2_3]"
-        bottom_bar = " {=====}"
+        header_bar = " {--*--}\n [1_2_3]"
+        bottom_bar = " {--*--}"
         column_separator = "|"
         print(header_bar)
         # going trough all 1-3 key:value pairs, printing the key and the values as joined strings for visual representation
@@ -213,30 +213,40 @@ def play_round():
 
     move_counter = 0
 
-    while move_counter < 9:
+    while True:
 
         game.draw_board()
 
         player1.prompt_move()
         move_counter += 1
+        # print(f"{move_counter}th move")
         game.redraw_board()
         if player1.determine_winning() is True:
-            player1.add_score()
+            # player1.add_score()
             # print(f"{player1.player_name} won!")
+            break
+
+        if move_counter == 9:
+            print("Viik see raund!")
             break
 
         game.draw_board()
         player2.prompt_move()
         move_counter += 1
+
+        # print(f"{move_counter}th move")
         game.redraw_board()
 
         if player2.determine_winning() is True:
             # print(f"{player2.player_name} won!")
-            player1.add_score()
+            # player1.add_score()
             break
 
         if move_counter == 9:
-            print("Viik!")
+            print("Viik see raund!")
+            break
+
+    return
 
 
 # Getting players input for player names

@@ -14,7 +14,7 @@ class Gameboard:
 
     def __repr__(self):
 
-        return "{p1_name} and {p2_name}, lets play a game of Tick-tack-toe for {rounds} more rounds! \n{p1_name}, your mark will be [{p1_icon}] and {p2_name}, yours will be [{p2_icon}]".format(
+        return "{p1_name} and {p2_name}, lets play a game of Tic-tac-toe for {rounds} more rounds! \n{p1_name}, your mark will be [{p1_icon}] and {p2_name}, yours will be [{p2_icon}]".format(
             p1_name=player1.player_name,
             p2_name=player2.player_name,
             rounds=self.rounds,
@@ -23,8 +23,8 @@ class Gameboard:
         )
 
     def draw_board(self):
-        header_bar = " {=====}\n [1_2_3]"
-        bottom_bar = " {=====}"
+        header_bar = " {--*--}\n [1_2_3]"
+        bottom_bar = " {--*--}"
         column_separator = "|"
         print(header_bar)
         # going trough all 1-3 key:value pairs, printing the key and the values as joined strings for visual representation
@@ -180,7 +180,7 @@ def get_num_matches():
 
     while True:
         num_of_matches = input(
-            "Welcome to a game of Tick-Tack-Toe, choose how many rounds you want to play: "
+            "Welcome to a game of Tic-Tac-Toe, choose how many rounds you want to play: "
         )
 
         try:
@@ -212,30 +212,41 @@ def play_round():
 
     move_counter = 0
 
-    while move_counter < 9:
+    while True:
 
         game.draw_board()
 
         player1.prompt_move()
         move_counter += 1
+        # print(f"{move_counter}th move")
         game.redraw_board()
         if player1.determine_winning() is True:
-            player1.add_score()
-            # print(f"{player1.player_name} won!")
+            # player1.add_score()
+            print(f"{player1.player_name} won this round!")
+            break
+
+        # Checking if move counter isnt 9 already and no winner could be determined beforehand from previous if sentence
+        if move_counter == 9:
+            print("Its a tie!")
             break
 
         game.draw_board()
         player2.prompt_move()
         move_counter += 1
+        # print(f"{move_counter}th move")
         game.redraw_board()
 
         if player2.determine_winning() is True:
-            # print(f"{player2.player_name} won!")
-            player1.add_score()
+            print(f"{player2.player_name} won this round!")
+            # player1.add_score()
             break
 
+        # Checking if move counter isnt 9 already and no winner could be determined beforehand from previous if sentence
         if move_counter == 9:
             print("Its a tie!")
+            break
+
+    return
 
 
 # Getting players input for player names
